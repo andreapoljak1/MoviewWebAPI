@@ -23,11 +23,26 @@ namespace Movies.Data.Repositories
         }
         public Movie InsertMovie(Movie new_movie)
         {
-            return null;
+            var searchMovie = _context.Movies.FirstOrDefault(s => s.Id == new_movie.Id);
+            if (searchMovie != null)
+            {
+                var max_id=_context.Movies.Max(s=>s.Id);
+                new_movie.Id= max_id+1;
+            }
+           var result= _context.Movies.Add(new_movie);
+            _context.SaveChanges();
+            return result.Entity;
         }
         public Movie UpdateMovie(Movie new_movie)
         {
-            return null;
+            //var result1 = GetMovieById(new_movie.Id);
+            var result = _context.Movies.FirstOrDefault(s => s.Id == new_movie.Id);
+            result.Title=new_movie.Title;
+            result.Genre=new_movie.Genre;
+            result.ReleaseYear=new_movie.ReleaseYear;
+           
+            _context.SaveChanges();
+            return result;
         }
         public Movie DeleteMovie(int id)
         {

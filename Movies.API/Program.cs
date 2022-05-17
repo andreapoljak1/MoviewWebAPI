@@ -7,12 +7,12 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 //naredba koja omoguæava spajanje s bazom
-builder.Services.AddDbContext<algebramssqlhost_moviesContext>(
-        options => options.UseSqlServer(
-        builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddDbContext<algebramssqlhost_moviesContext>();
+
+
 
 //definiranje objekta neke klase (app bi radio i bez toga - služi za povezivanje interfejsa)
-//builder.Services.AddScoped<IMovieRepository, MovieRepository>();
+builder.Services.AddScoped<IMovieRepository, MovieRepository>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

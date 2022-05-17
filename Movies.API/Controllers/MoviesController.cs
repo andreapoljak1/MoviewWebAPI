@@ -14,7 +14,7 @@ namespace Movies.API.Controllers
         private readonly IMovieRepository _movieRepository;
 
         //konstruktor
-        public MoviesController (IMovieRepository movieRepository)
+        public MoviesController(IMovieRepository movieRepository)
         {
             _movieRepository = movieRepository;
         }
@@ -32,29 +32,87 @@ namespace Movies.API.Controllers
 
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
-            
-        }
 
-        [Route("api/Movies")]
+        }
+        //GET: api/movies/5
         [HttpGet("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult FindMovies(int id)
         {
-            if (id == 0)
+            try
             {
-                return BadRequest("Nije moguće prikazati rezultate, dogodila se greška!");
-            }
-            var movie = _movieRepository.GetMovieById(id);
-            if (movie == null)
-            {
-
-                return NotFound("Rezultat nije pronađen");
-            }
-            else
-            {
+                var movie = _movieRepository.GetMovieById(id);
+                if (movie == null)
+                {
+                    return StatusCode(StatusCodes.Status404NotFound, "Rezultat nije pronađen");
+                }
                 return Ok(movie);
             }
+            catch (Exception ex)
+            {
+
+                return StatusCode(StatusCodes.Status500InternalServerError, "Nije moguće prikazati rezultate, dogodila se greška!");
+            }
+
+        }
+
+        //POST: api/Movies
+        [HttpPost]
+        public ActionResult PostMovie(Movie new_movie)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+                //Napomena:svojstvo primarnog ključa nije auto increment!
+                //programsko rješenje za provjeru max vrijednosti svojstva id zapisa u tablivi te uvećavanje za 1 prije kreiranja novog zapisa
+                var created_movie = _movieRepository.InsertMovie(new_movie);
+                return Ok("Zapis je kreiran");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+
+            }
+        }
+
+
+        //PUT: api/movies/5
+
+        [HttpPut("{id}")]
+
+        public ActionResult PutMovie(int id, Movie update_movie)
+        {
+            try
+            {
+                
+                if (id != update_movie.Id)
+                {
+                    return BadRequest("Parametri ID se ne poklapaju");
+                }
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest("Podaci nisu validni!");
+                }
+                var idExist = _movieRepository.GetMovieById(id);
+                if (idExist == null)
+                {
+                    return NotFound("Zapis nije pronađen");
+                }
+
+                return Ok(_movieRepository.UpdateMovie(update_movie));
+
+
+            }
+            catch (Exception)
+            {
+
+                return StatusCode(StatusCodes.Status500InternalServerError, "Greška kod ažuriranja podataka");
+            }
+           
+           
+            
 
         }
 
