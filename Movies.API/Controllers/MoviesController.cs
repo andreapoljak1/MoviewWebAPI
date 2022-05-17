@@ -81,7 +81,6 @@ namespace Movies.API.Controllers
         //PUT: api/movies/5
 
         [HttpPut("{id}")]
-
         public ActionResult PutMovie(int id, Movie update_movie)
         {
             try
@@ -111,10 +110,28 @@ namespace Movies.API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "Greška kod ažuriranja podataka");
             }
            
-           
-            
-
         }
+
+        //DELETE:api/movies/5
+        [HttpPost]
+        public ActionResult DeleteMovie(int id)
+        {
+            try
+            {
+                if (id==0)
+                {
+                    return BadRequest("Id nije dobar");
+                }
+                var movieDelete = _movieRepository.DeleteMovie(id);
+                return Ok("Zapis je obrisan");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+
+            }
+        }
+
 
     }
 }

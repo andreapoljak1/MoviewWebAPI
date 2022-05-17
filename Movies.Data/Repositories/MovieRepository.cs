@@ -46,6 +46,13 @@ namespace Movies.Data.Repositories
         }
         public Movie DeleteMovie(int id)
         {
+            var result = _context.Movies.FirstOrDefault(s => s.Id == id);
+            if (result != null)
+            {
+                _context.Movies.Remove(result);
+                _context.SaveChanges();
+            }
+           
             return null;
         }
 
