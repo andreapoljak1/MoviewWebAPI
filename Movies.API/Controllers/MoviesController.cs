@@ -112,13 +112,13 @@ namespace Movies.API.Controllers
            
         }
 
-        //DELETE:api/movies/5
-        [HttpPost]
+        ////DELETE:api/movies/5
+        [HttpDelete("{id}")]
         public ActionResult DeleteMovie(int id)
         {
             try
             {
-                if (id==0)
+                if (id == 0)
                 {
                     return BadRequest("Id nije dobar");
                 }
@@ -132,6 +132,21 @@ namespace Movies.API.Controllers
             }
         }
 
+
+        //GET: api/movies/search
+        [HttpGet("search")]
+        public ActionResult SearchByQueryString(string s, string orderby="asc", int per_page=0)
+        {
+            try
+            {
+                return Ok(_movieRepository.QueryStringFilter(s, orderby, per_page));
+            }
+            catch (Exception)
+            {
+
+                return StatusCode(StatusCodes.Status500InternalServerError, "Greška u dohvatu podataka");
+            }
+        }
 
     }
 }

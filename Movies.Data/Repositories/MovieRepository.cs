@@ -58,7 +58,36 @@ namespace Movies.Data.Repositories
 
         public IEnumerable<Movie> QueryStringFilter(string s, string orderby,int per_page)
         {
-            return null;
+            //može ovako ali može i bolje
+            //List<Movie> result = new List<Movie>();
+            //if (orderby == "asc")
+            //{
+            //    result = _context.Movies.Where(p => p.Title.Contains(s)).OrderBy(s => s.Id).Take(per_page).ToList();
+            //}
+            //else
+            //{
+            //   result = _context.Movies.Where(p => p.Title.Contains(s)).OrderByDescending(s => s.Id).Take(per_page).ToList();
+            //}
+
+            var result = _context.Movies.Where(p => p.Title.Contains(s)).ToList();
+            switch (orderby)
+            {
+                case "desc":
+                    result=result.OrderByDescending(p => p.Id).ToList();
+                    break;
+                default:
+                    result=result.OrderBy(p => p.Id).ToList();
+                    break;
+            }
+            if (per_page > 0)
+            {
+                result=result.Take(per_page).ToList();
+            }
+
+
+
+            return result;
+
         }
 
 
